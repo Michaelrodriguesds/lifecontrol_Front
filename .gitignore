@@ -1,0 +1,28 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+.angular/
+
+# Variáveis de ambiente — NUNCA suba isso!
+.env
+*.env.local
+src/environments/environment.prod.ts
+
+# Cache
+.cache/
+.npm/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
