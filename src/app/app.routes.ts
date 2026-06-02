@@ -4,11 +4,13 @@ import { authGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
   {
+    // Rota pública: página de login
     path: 'login',
     loadComponent: () =>
       import('./auth/login.component').then(m => m.LoginComponent),
   },
   {
+    // Rotas protegidas: só entram aqui se o authGuard aprovar (token válido)
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
@@ -51,5 +53,11 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '**', redirectTo: 'dashboard' },
+
+  // ⚠️ PROBLEMA CORRIGIDO:
+  // Antes: { path: '**', redirectTo: 'dashboard' }
+  // Qualquer URL desconhecida mandava direto ao dashboard,
+  // pulando o guard de autenticação.
+  // Agora: manda para login se não autenticado (o guard trata o redirect).
+  { path: '**', redirectTo: 'login' },
 ];
