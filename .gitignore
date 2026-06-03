@@ -8,8 +8,6 @@ dist/
 # Variáveis de ambiente — NUNCA suba isso!
 .env
 *.env.local
-src/environments/environment.prod.ts
-
 # Cache
 .cache/
 .npm/
