@@ -1,62 +1,71 @@
+// src/app/core/services/goals.service.ts
 import { Injectable, inject } from '@angular/core';
-import { ApiService } from './api.service';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface Goal {
-  id?: string;
-  title: string;
-  description?: string;
-  target_amount: number;
-  current_amount: number;
-  progress_percent: number;
-  remaining_amount: number;
-  status: string;
-  priority: string;
-  category?: string;
-  icon?: string;
-  color?: string;
-  deadline?: string;
-  created_at?: string;
+  id?:               string;
+  title:             string;
+  description?:      string;
+  category?:         string;
+  target_amount:     number;
+  current_amount:    number;
+  remaining_amount:  number;
+  // ⚠️ PROBLEMA CORRIGIDO:
+  // O backend agora usa strings para priority ('low','medium','high','critical')
+  // em vez de inteiros (1-5). O frontend já usava strings — agora estão alinhados.
+  priority:          'low' | 'medium' | 'high' | 'critical';
+  status:            'active' | 'completed' | 'paused' | 'cancelled';
+  progress_percent:  number;
+  deadline?:         string;
+  color?:            string;
+  icon?:             string;
+  tags?:             string[];
 }
 
-export interface GoalTransaction {
-  id?: string;
-  goal_id: string;
-  amount: number;
-  type: 'deposit' | 'withdrawal';
-  description?: string;
-  date?: string;
+export interface Transaction {
+  amount:            number;
+  // ⚠️ PROBLEMA CORRIGIDO:
+  // O componente mandava { type: 'deposit' } mas o backend esperava
+  // { transaction_type: 'deposit' }. O service agora faz o mapeamento correto.
+  transaction_type:  'deposit' | 'withdrawal';
+  description?:      string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class GoalsService {
-  private api = inject(ApiService);
+  private http = inject(HttpClient);
+  private base = environment.apiUrl;
 
-  getAll(status?: string): Observable<Goal[]> {
-    return this.api.get<Goal[]>('/api/goals', status ? { status } : undefined);
-  }
-
-  get(id: string): Observable<Goal> {
-    return this.api.get<Goal>(`/api/goals/${id}`);
+  // "getAll" para compatibilidade com o componente existente
+  getAll(): Observable<Goal[]> {
+    return this.http.get<Goal[]>(`${this.base}/api/goals/`);
   }
 
   create(data: Partial<Goal>): Observable<Goal> {
-    return this.api.post<Goal>('/api/goals', data);
+    return this.http.post<Goal>(`${this.base}/api/goals/`, data);
   }
 
   update(id: string, data: Partial<Goal>): Observable<Goal> {
-    return this.api.put<Goal>(`/api/goals/${id}`, data);
+    return this.http.put<Goal>(`${this.base}/api/goals/${id}`, data);
   }
 
   delete(id: string): Observable<void> {
-    return this.api.delete<void>(`/api/goals/${id}`);
+    return this.http.delete<void>(`${this.base}/api/goals/${id}`);
   }
 
-  addTransaction(goalId: string, data: Partial<GoalTransaction>): Observable<any> {
-    return this.api.post(`/api/goals/${goalId}/transactions`, data);
-  }
-
-  getTransactions(goalId: string): Observable<GoalTransaction[]> {
-    return this.api.get<GoalTransaction[]>(`/api/goals/${goalId}/transactions`);
+  addTransaction(goalId: string, tx: {
+    amount: number;
+    type: 'deposit' | 'withdrawal';
+    description?: string;
+  }): Observable<any> {
+    // Mapeia "type" para "transaction_type" que o backend espera
+    const payload: Transaction = {
+      amount:           tx.amount,
+      transaction_type: tx.type,
+      description:      tx.description,
+    };
+    return this.http.post(`${this.base}/api/goals/${goalId}/transactions`, payload);
   }
 }
