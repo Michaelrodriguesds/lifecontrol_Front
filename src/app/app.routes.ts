@@ -31,6 +31,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./expenses/expenses.component').then(m => m.ExpensesComponent),
       },
+
+{
+        path: 'work',   // ← nova rota
+        loadComponent: () =>
+          import('./work/work.component').then(m => m.WorkComponent),
+      },
+
+
       {
         path: 'items',
         loadComponent: () =>
