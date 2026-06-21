@@ -16,7 +16,6 @@ const PRI: Record<string, { label:string; badge:string; dot:string }> = {
   imports: [CommonModule, FormsModule, ReactiveFormsModule, CurrencyPipe, DecimalPipe],
   template: `
     <div class="page">
-      <!-- Header -->
       <div class="page-top">
         <div>
           <div class="page-title">Metas 🎯</div>
@@ -25,7 +24,6 @@ const PRI: Record<string, { label:string; badge:string; dot:string }> = {
         <span class="badge badge-green">{{ completed() }} concluída{{ completed() !== 1 ? 's' : '' }}</span>
       </div>
 
-      <!-- Filter chips -->
       <div class="chip-group" style="margin-bottom:16px">
         <button class="chip" [class.selected]="fil()==='all'"       (click)="fil.set('all')">Todas</button>
         <button class="chip" [class.selected]="fil()==='active'"    (click)="fil.set('active')">Ativas</button>
@@ -34,13 +32,11 @@ const PRI: Record<string, { label:string; badge:string; dot:string }> = {
         <button class="chip"       [class.selected]="fil()==='done'"  (click)="fil.set('done')">✅ Concluídas</button>
       </div>
 
-      <!-- List -->
       <div *ngIf="visible().length > 0; else empty">
         <div class="goal-card animate-in" *ngFor="let g of visible(); trackBy: trackId">
           <div class="pri-stripe" [style.background]="priDot(g.priority)"></div>
 
           <div class="goal-body">
-            <!-- Top -->
             <div class="goal-top">
               <div class="goal-info">
                 <div class="goal-title">{{ g.title }}</div>
@@ -59,7 +55,6 @@ const PRI: Record<string, { label:string; badge:string; dot:string }> = {
               </div>
             </div>
 
-            <!-- Amounts -->
             <div class="goal-amts">
               <div class="amt">
                 <span class="amt-l">Investido</span>
@@ -77,7 +72,6 @@ const PRI: Record<string, { label:string; badge:string; dot:string }> = {
               </div>
             </div>
 
-            <!-- Progress -->
             <div class="progress-wrap" style="margin-top:10px">
               <div class="progress-track">
                 <div class="progress-fill"
@@ -106,7 +100,6 @@ const PRI: Record<string, { label:string; badge:string; dot:string }> = {
       <button class="btn-fab" (click)="openNew()">+</button>
     </div>
 
-    <!-- Sheet: criar/editar -->
     <div class="sheet-overlay" *ngIf="showForm()" (click)="bgClose($event)">
       <div class="sheet">
         <div class="sheet-handle"></div>
@@ -162,7 +155,6 @@ const PRI: Record<string, { label:string; badge:string; dot:string }> = {
       </div>
     </div>
 
-    <!-- Sheet: transação -->
     <div class="sheet-overlay" *ngIf="showTx()" (click)="bgCloseTx($event)">
       <div class="sheet">
         <div class="sheet-handle"></div>
@@ -190,45 +182,25 @@ const PRI: Record<string, { label:string; badge:string; dot:string }> = {
     </div>
   `,
   styles: [`
-    .goal-card {
-      display:flex; background:var(--bg-card); border:1px solid var(--border);
-      border-radius:var(--r-lg); margin-bottom:12px; overflow:hidden;
-      transition:border-color .2s;
-    }
+    .goal-card { display:flex; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r-lg); margin-bottom:12px; overflow:hidden; transition:border-color .2s; }
     .goal-card:hover { border-color:rgba(99,102,241,.4); }
-
     .pri-stripe { width:4px; flex-shrink:0; }
     .goal-body  { flex:1; padding:14px 14px 14px 12px; min-width:0; }
-
     .goal-top  { display:flex; gap:8px; align-items:flex-start; margin-bottom:10px; }
     .goal-info { flex:1; min-width:0; }
-    .goal-title{
-      font-size:15px; font-weight:700; color:var(--text-1);
-      margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
+    .goal-title{ font-size:15px; font-weight:700; color:var(--text-1); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .goal-badges { display:flex; flex-wrap:wrap; gap:5px; }
     .goal-acts   { display:flex; gap:5px; flex-shrink:0; }
-
-    .goal-amts {
-      display:flex; align-items:center; gap:8px;
-      background:var(--bg-elevated); border-radius:8px; padding:8px 10px;
-    }
+    .goal-amts { display:flex; align-items:center; gap:8px; background:var(--bg-elevated); border-radius:8px; padding:8px 10px; }
     .amt       { display:flex; flex-direction:column; gap:1px; }
     .amt-l     { font-size:10px; color:var(--text-3); font-weight:600; text-transform:uppercase; letter-spacing:.4px; }
     .amt-v     { font-size:13px; font-weight:700; color:var(--text-1); }
     .amt-v.indigo { color:var(--indigo); }
     .amt-v.muted  { color:var(--text-2); }
     .amt-arr   { color:var(--text-3); font-size:12px; flex-shrink:0; }
-
     .goal-dl { font-size:11px; color:var(--text-3); margin-top:8px; }
-
     .tx-row { display:flex; gap:10px; margin-bottom:16px; }
-    .tx-btn {
-      flex:1; padding:10px; border-radius:var(--r-sm);
-      background:var(--bg-input); border:1.5px solid var(--border);
-      color:var(--text-2); font-size:14px; font-weight:600;
-      cursor:pointer; transition:all .18s; font-family:var(--font);
-    }
+    .tx-btn { flex:1; padding:10px; border-radius:var(--r-sm); background:var(--bg-input); border:1.5px solid var(--border); color:var(--text-2); font-size:14px; font-weight:600; cursor:pointer; transition:all .18s; font-family:var(--font); }
     .tx-btn.dep { border-color:var(--green); background:var(--green-t); color:var(--green); }
     .tx-btn.wit { border-color:var(--red);   background:var(--red-t);   color:var(--red);   }
   `],
@@ -273,7 +245,7 @@ export class GoalsComponent implements OnInit {
   load() {
     this.svc.getAll().subscribe({
       next: (g: Goal[]) => this.goals.set(g),
-      error: () => this.goals.set(this.mock()),
+      error: () => this.goals.set([]),
     });
   }
 
@@ -285,13 +257,28 @@ export class GoalsComponent implements OnInit {
 
   openEdit(g: Goal) {
     this.editingId = g.id || null;
+
+    // ⚠️ CORRIGIDO: antes o campo "deadline" era sempre apagado (string vazia),
+    // mesmo quando a meta já tinha um prazo salvo. Isso causava erro 422 ao salvar,
+    // porque o servidor recebia um texto vazio onde esperava uma data válida ou nada.
+    //
+    // Agora: se a meta já tem prazo salvo, convertemos a data para o formato
+    // que o campo <input type="date"> entende (AAAA-MM-DD).
+    // Se não tiver prazo, deixamos realmente vazio.
+    let deadlineForInput = '';
+    if (g.deadline) {
+      const d = new Date(g.deadline);
+      // toISOString() devolve "2026-08-10T00:00:00.000Z" — pegamos só a parte da data
+      deadlineForInput = d.toISOString().split('T')[0];
+    }
+
     this.form.patchValue({
       title:         g.title,
       target_amount: g.target_amount,
       priority:      g.priority,
       category:      g.category || '',
-      deadline:      '',
-      description:   '',
+      deadline:      deadlineForInput,
+      description:   g.description || '',
     });
     this.showForm.set(true);
   }
@@ -299,7 +286,18 @@ export class GoalsComponent implements OnInit {
   submit() {
     if (this.form.invalid) return;
     const val: any = { ...this.form.value };
-    if (val.deadline) val.deadline = new Date(val.deadline).toISOString();
+
+    if (val.deadline) {
+      // Tem data preenchida → converte para o formato que o servidor entende
+      val.deadline = new Date(val.deadline).toISOString();
+    } else {
+      // ⚠️ CORRIGIDO: antes, quando vazio, o campo continuava sendo enviado
+      // como texto vazio (""), o que o servidor rejeitava com erro 422.
+      // Agora removemos o campo do pacote inteiro quando está vazio —
+      // é como se você simplesmente não tivesse preenchido aquele campo no formulário.
+      delete val.deadline;
+    }
+
     const obs = this.editingId
       ? this.svc.update(this.editingId, val)
       : this.svc.create(val);
@@ -352,14 +350,5 @@ export class GoalsComponent implements OnInit {
     if (priority === 'high' || priority === 'critical') return 'linear-gradient(90deg,#ef4444,#f87171)';
     if (priority === 'low')  return 'linear-gradient(90deg,#22c55e,#4ade80)';
     return 'linear-gradient(90deg,#6366f1,#a78bfa)';
-  }
-
-  private mock(): Goal[] {
-    return [
-      { id:'1', title:'Viagem Europa',    target_amount:20000, current_amount:8500,  progress_percent:42.5, remaining_amount:11500, status:'active',    priority:'high',   color:'#ef4444' },
-      { id:'2', title:'Notebook Novo',    target_amount:8000,  current_amount:8000,  progress_percent:100,  remaining_amount:0,     status:'completed', priority:'low',    color:'#22c55e' },
-      { id:'3', title:'Fundo Emergência', target_amount:15000, current_amount:3200,  progress_percent:21.3, remaining_amount:11800, status:'active',    priority:'medium', color:'#f59e0b' },
-      { id:'4', title:'Carro Novo',       target_amount:50000, current_amount:5000,  progress_percent:10,   remaining_amount:45000, status:'active',    priority:'high',   category:'Veículo', color:'#ef4444' },
-    ];
   }
 }
